@@ -1,8 +1,9 @@
-import Express from 'express';
-import { envConfig } from './config';
+import express from 'express';
+import { startServer } from './server';
+import { connectDB } from './db';
 function start(){
-    const app=Express();
-    const port=envConfig.API_PORT;
-    app.listen(port,()=>console.log(`Server is running ${port}`));
+    const app=express();
+    connectDB();
+    startServer(app);
 }
 start();

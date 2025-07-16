@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsnd --respawn --transpile-only ./src/index.ts"
+    "dev": "tsnd --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
+    "build": "tsc & tsconfig-paths"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
-    "mongoose": "^8.16.3"
+    "mongoose": "^8.16.3",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
