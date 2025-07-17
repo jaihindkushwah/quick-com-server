@@ -1,1 +1,3 @@
-export class CustomerService {}
+export class CustomerService {
+    constructor() {}
+}

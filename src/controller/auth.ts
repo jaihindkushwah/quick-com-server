@@ -3,7 +3,14 @@ import { Request, Response ,} from "express";
 import { STATUS_CODES } from "http";
 
 export class AuthController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {
+        this.init();
+    }
+    init(){
+        this.login = this.login.bind(this);
+        this.register = this.register.bind(this);
+        this.resendOtp = this.resendOtp.bind(this);
+    }
     async login(req: Request, res: Response) {
         try {
             const data=await this.userService.login({

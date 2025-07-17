@@ -1,1 +1,3 @@
-export class AdminService {}
+export class AdminService {
+    constructor() {}
+}

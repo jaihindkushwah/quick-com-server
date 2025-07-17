@@ -6,7 +6,7 @@ export class AddressService {
   async createNewAddress(address: Omit<IAddress, "_id">) : Promise<IAddress> {
     return await this.addressModel.create(address) as IAddress;
   }
- async updateAddressById(addressId,address:Partial<IAddress>): Promise<IAddress> {
+ async updateAddressById(addressId:string,address:Partial<IAddress>): Promise<IAddress> {
     const filteredAddress = Object.fromEntries(Object.entries(address).filter(([key, value]) => value !== undefined));
     return await this.addressModel.findByIdAndUpdate(addressId, filteredAddress, { new: false }) as IAddress;
   }

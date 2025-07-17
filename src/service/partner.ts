@@ -1,1 +1,3 @@
-export class PartnerService {}
+export class PartnerService {
+    constructor() {}
+}
