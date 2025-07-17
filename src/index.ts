@@ -1,9 +1,10 @@
 import express from 'express';
-import { startServer } from './server';
+import type { Express } from 'express';
+import { start } from './server';
 import { connectDB } from './db';
-function start(){
-    const app=express();
-    connectDB();
-    startServer(app);
+async function init(){
+    const app:Express=express();
+    await connectDB();
+    start(app);
 }
-start();
+init();
