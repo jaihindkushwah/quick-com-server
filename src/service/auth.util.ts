@@ -14,7 +14,7 @@ export class AuthUtilsService {
   }
    generateToken(user: IUser) {
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email, role: user.role, name: user.name , available: user.available , verfied: user.verfied },
       envConfig.JWT_SECRET_KEY,
       { expiresIn: "1d" }
     );

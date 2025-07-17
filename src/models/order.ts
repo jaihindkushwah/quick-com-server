@@ -4,7 +4,7 @@ import { model, Schema } from "mongoose";
 const orderSchema = new Schema<OrderDocument>(
   {
     customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    deliveryPartnerId: { type: Schema.Types.ObjectId, ref: "User" }, 
+    deliveryPartnerId: { type: Schema.Types.ObjectId, ref: "User" },
     items: [
       {
         productId: {
@@ -27,7 +27,12 @@ const orderSchema = new Schema<OrderDocument>(
       ],
       default: "pending",
     },
-    deliveryAddressId: { type:Schema.Types.ObjectId, ref: "Address", required: true },
+    deliveryAddressId: {
+      type: Schema.Types.ObjectId,
+      ref: "Address",
+      required: true,
+    },
+    totalPrice: { type: Number, required: true, min: 0 },
   },
   { timestamps: true }
 );

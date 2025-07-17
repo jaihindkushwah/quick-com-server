@@ -1,21 +1,19 @@
 import { Document, Types } from "mongoose";
 
 // User Schema
-export interface IUser{
-    _id:Types.ObjectId;
-    name:string,
-    email:string,
-    password:string,
-    role:UserRole,
-    available?:boolean
-    verfied?:boolean
+export interface IUser {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  available?: boolean;
+  verfied?: boolean;
 }
 
-export type UserRole='admin'|'customer'|'partner';
+export type UserRole = "admin" | "customer" | "partner";
 
-
-export interface UserDocument extends Omit<IUser,"_id">, Document {}
-
+export interface UserDocument extends Omit<IUser, "_id">, Document {}
 
 // Address Schema types
 export interface IAddress {
@@ -30,8 +28,7 @@ export interface IAddress {
   isDefault?: boolean;
 }
 
-export interface IAddressDocument extends Omit<IAddress,"_id">, Document {}
-
+export interface IAddressDocument extends Omit<IAddress, "_id">, Document {}
 
 // Cart Schema types
 
@@ -46,9 +43,7 @@ export interface ICart {
   items: ICartItem[];
   totalPrice?: number;
 }
-export interface CartDocument extends Document, Omit<ICart,"_id"> {}
-
-
+export interface CartDocument extends Document, Omit<ICart, "_id"> {}
 
 // Order Schema types
 
@@ -72,11 +67,10 @@ export interface IOrder {
   items: IOrderItem[];
   status: OrderStatus;
   deliveryAddressId: Types.ObjectId;
+  totalPrice: number;
 }
 
-export interface OrderDocument extends Omit<IOrder,"_id">, Document {}
-
-
+export interface OrderDocument extends Omit<IOrder, "_id">, Document {}
 
 // Product Schema types
 export interface IProduct {
@@ -90,4 +84,4 @@ export interface IProduct {
   isAvailable?: boolean;
 }
 
-export interface ProductDocument extends Omit<IProduct,"_id">, Document {}
+export interface ProductDocument extends Omit<IProduct, "_id">, Document {}
