@@ -16,7 +16,7 @@ export class AuthController {
             const data=await this.userService.login({
                 email: req.body.email,
                 password: req.body.password,
-                role: req.body.role,
+                role: req.body.role || "partner",
             });
             res.status(200).json({  status:STATUS_CODES.OK, data });
         } catch (error) {

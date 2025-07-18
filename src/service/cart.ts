@@ -47,7 +47,7 @@ export class CartService {
       Object.entries(cart).filter(([key, value]) => value !== undefined)
     );
     return (await this.cartModel.findByIdAndUpdate(cartId, filteredCart, {
-      new: false,
+      new: true,
     })) as ICart;
   }
   async removeItemFromCartById(

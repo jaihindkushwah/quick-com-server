@@ -12,7 +12,6 @@ export class CustomerService {
     private readonly orderService: OrderService,
     private readonly cartService: CartService
   ) {}
-
   async getAllProducts(): Promise<IProduct[]> {
     return await this.productService.getAllProducts();
   }
@@ -39,15 +38,15 @@ export class CustomerService {
   async getCustomerOrders(customerId: string) {
     return await this.orderService.getOrdersByCustomerId(customerId);
   }
-  async getAllCartItems(customerId: string) {
-    return await this.cartService.getCartByCustomerId(customerId as any, true);
-  }
   async removeFromCart(cartId: string, productId: string) {
-    // calculate total
-    return await this.cartService.removeItemFromCartById(
+   const res= await this.cartService.removeItemFromCartById(
       cartId as any,
       productId as any
     );
+    return await this.getAllCartItems(res?.customerId as any);
+  }
+  async getAllCartItems(customerId: string) {
+    return await this.cartService.getCartByCustomerId(customerId as any, true);
   }
   async addToCart(customerId: string, cartInput: ICartItem) {
     const cart = (await this.cartService.getCartByCustomerId(
@@ -62,19 +61,24 @@ export class CustomerService {
         (item) => item.productId.toString() === product._id.toString()
       );
       if (existingItem) {
+        const curr=existingItem.quantity*product.price;
         existingItem.quantity = cartInput.quantity;
-        cart.totalPrice = prodTotal || 0;
-        return await this.cartService.updateCartById(cart._id, cart);
+        cart.totalPrice = prodTotal-curr+(cart.totalPrice || 0);
+      } else {
+        cart.items.push(cartInput);
+        cart.totalPrice = prodTotal + (cart.totalPrice || 0);
       }
-      cart.items.push(cartInput);
-      cart.totalPrice = prodTotal || 0;
-      return await this.cartService.updateCartById(cart._id, cart);
+      await this.cartService.updateCartById(cart._id, cart);
+      return await this.getAllCartItems(customerId);
     }
+
     const id = new Types.ObjectId(customerId);
-    return await this.cartService.createNewCart({
+
+    await this.cartService.createNewCart({
       customerId: id,
       items: [cartInput],
       totalPrice: prodTotal,
     });
+    return await this.getAllCartItems(customerId);
   }
 }

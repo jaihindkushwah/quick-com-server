@@ -25,3 +25,5 @@ export class AuthUtilsService {
     return jwt.verify(token, envConfig.JWT_SECRET_KEY) as T;
   }
 }
+
+export const authUtilsService = new AuthUtilsService();

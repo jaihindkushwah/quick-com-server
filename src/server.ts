@@ -7,6 +7,7 @@ import { routes } from "./routes";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { optionalAuthWithValidation } from "./middleware";
+import { setupCartSocketEvents } from "./sockets/cartSocket";
 
 export function start(app: Application) {
   securityMiddleware(app);
@@ -20,6 +21,7 @@ function startServer(app: Application): void {
   const httpServer: HTTPServer = createServer(app);
   const io = createSocketServer(httpServer);
 
+  setupCartSocketEvents(io);
   setupOrderSocketEvents(io);
   httpServer.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
