@@ -37,10 +37,10 @@ export interface ICartItem {
   quantity: number;
 }
 
-export interface ICart {
+export interface ICart<T = ICartItem> {
   _id: Types.ObjectId;
   customerId: Types.ObjectId;
-  items: ICartItem[];
+  items: T[];
   totalPrice?: number;
 }
 export interface CartDocument extends Document, Omit<ICart, "_id"> {}

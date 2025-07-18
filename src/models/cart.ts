@@ -19,6 +19,7 @@ const cartSchema = new Schema<CartDocument>(
         quantity: { type: Number, required: true, min: 1 },
       },
     ],
+    totalPrice: { type: Number, required: true, min: 0 },
   },
   { timestamps: true }
 );
