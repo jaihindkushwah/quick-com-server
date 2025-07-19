@@ -57,7 +57,7 @@ export class OrderService {
       Object.entries(order).filter(([key, value]) => value !== undefined)
     );
     return (await this.orderModel.findByIdAndUpdate(orderId, filteredOrder, {
-      new: false,
+      new: true,
       session,
     })) as IOrder;
   }

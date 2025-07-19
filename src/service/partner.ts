@@ -1,4 +1,4 @@
-import { IUser } from "@/@types/schema";
+import { IOrder, IUser } from "@/@types/schema";
 import { UserModel } from "@/models/user";
 import { OrderService } from "./order";
 import mongoose, { Types } from "mongoose";
@@ -64,5 +64,8 @@ export class PartnerService {
     // } finally {
     //   session.endSession();
     // }
+  }
+  async updateOrderStatus(orderId: string, data: Partial<IOrder>) {
+    return this.orderService.updateOrderById(orderId, data);
   }
 }

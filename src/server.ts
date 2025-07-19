@@ -2,7 +2,6 @@ import { envConfig } from "./config";
 import { Application } from "express";
 import { createServer, Server as HTTPServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import { setupOrderSocketEvents } from "./sockets/orderSocket";
 import { routes } from "./routes";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -22,7 +21,7 @@ function startServer(app: Application): void {
   const io = createSocketServer(httpServer);
 
   setupCartSocketEvents(io);
-  setupOrderSocketEvents(io);
+  // setupOrderSocketEvents(io);
   httpServer.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
     console.log(`WebSocket listening at ws://localhost:${port}`);
