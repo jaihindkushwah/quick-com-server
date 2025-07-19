@@ -13,6 +13,9 @@ export class PartnerRoutes {
   }
   routes() {
     this.router.get("/my-orders", this.partnerController.getMyOrders);
+    this.router.get("/unassigned-orders", this.partnerController.getUnassignedOrders);
+    this.router.get("/accept-order/:id", this.partnerController.acceptOrder);
+    this.router.get("/reject-order/:id", this.partnerController.rejectOrder);
     return this.router;
   }
 }

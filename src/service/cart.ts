@@ -1,15 +1,15 @@
 import { ICart, IProduct } from "@/@types/schema";
 import { CartModel } from "@/models/cart";
-import { DeleteResult } from "mongoose";
+import mongoose, { DeleteResult } from "mongoose";
 
 export class CartService {
   constructor(private readonly cartModel = CartModel) {}
   async createNewCart(cart: Omit<ICart, "_id">): Promise<ICart> {
     return (await this.cartModel.create(cart)) as ICart;
   }
-  async getCartById(cartId: ICart["_id"]): Promise<ICart> {
-    return (await this.cartModel.findById(cartId)) as ICart;
-  }
+  async getCartById(cartId: ICart["_id"], session?: mongoose.ClientSession): Promise<ICart> {
+  return (await this.cartModel.findById(cartId, null, { session })) as ICart;
+}
   async getCartByCustomerId(
     customerId: ICart["customerId"],
     populate: boolean = false
@@ -31,8 +31,8 @@ export class CartService {
     }
     return cart as ICart<IProduct> | ICart | null;
   }
-  async deleteCartById(cartId: ICart["_id"]): Promise<ICart> {
-    return (await this.cartModel.findByIdAndDelete(cartId)) as ICart;
+  async deleteCartById(cartId: ICart["_id"],session?:mongoose.ClientSession): Promise<ICart> {
+    return (await this.cartModel.findByIdAndDelete(cartId,{session})) as ICart;
   }
   async deleteCartByCustomerId(
     customerId: ICart["customerId"]

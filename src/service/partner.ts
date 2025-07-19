@@ -43,5 +43,26 @@ export class PartnerService {
       session.endSession();
     }
   }
-  async rejectOrder(id: string, deliveryPartnerId: string) {}
+  async rejectOrder(id: string, deliveryPartnerId: string) {
+    console.log(id, deliveryPartnerId);
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
+    // try {
+    //   const updatedOrder = await this.orderService.acceptOrderById(
+    //     id,
+    //     {
+    //       status: OrderStatusEnum.CANCELLED,
+    //       deliveryPartnerId: new Types.ObjectId(deliveryPartnerId),
+    //     },
+    //     session
+    //   );
+    //   await session.commitTransaction();
+    //   return updatedOrder;
+    // } catch (error) {
+    //   await session.abortTransaction();
+    //   throw error;
+    // } finally {
+    //   session.endSession();
+    // }
+  }
 }

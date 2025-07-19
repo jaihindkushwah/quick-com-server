@@ -1,5 +1,6 @@
 import { IProduct } from "@/@types/schema";
 import { ProductModel } from "@/models/product";
+import mongoose from "mongoose";
 
 export class ProductService {
   constructor(private readonly productModel = ProductModel) {}
@@ -28,5 +29,22 @@ export class ProductService {
       filteredProduct,
       { new: false }
     )) as IProduct;
+  }
+  async decrementStock(productId: string, quantity: number, session?: mongoose.ClientSession): Promise<boolean> {
+    const result = await ProductModel.findOneAndUpdate(
+      {
+        _id: productId,
+        stock: { $gte: quantity },
+      },
+      {
+        $inc: { stock: -quantity },
+      },
+      {
+        new: true,
+        session
+      }
+    );
+
+    return !!result;
   }
 }

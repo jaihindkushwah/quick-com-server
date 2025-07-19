@@ -6,13 +6,16 @@ import loash from "lodash";
 
 export class OrderService {
   constructor(private readonly orderModel = OrderModel) {}
-  async createNewOrder(order: Omit<IOrder, "_id">): Promise<IOrder> {
-    return (await this.orderModel.create(order)) as IOrder;
-  }
-  async getAllOrders(populate?: boolean): Promise<IOrder[]> {
+  async createNewOrder(order: Omit<IOrder, "_id">, session?: mongoose.ClientSession): Promise<IOrder> {
+  const newOrder = new this.orderModel(order);
+  await newOrder.save({ session });
+  return newOrder as IOrder;
+}
+
+  async getOrders(order:IOrder,populate?: boolean): Promise<IOrder[]> {
     if (populate) {
       const orders = await this.orderModel
-        .find()
+        .find({...order})
         .populate({
           path: "customerId",
           select: "_id name email",
@@ -82,7 +85,7 @@ export class OrderService {
     );
   }
   async getOrdersByCustomerId(customerId: string): Promise<IOrder[]> {
-    return (await this.orderModel.find({ customerId })) as IOrder[];
+    return (await this.getOrders({ customerId } as any,true)) as IOrder[];
   }
   async getOrdersByDeliveryPartnerId(
     deliveryPartnerId: string

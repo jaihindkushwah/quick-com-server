@@ -3,7 +3,7 @@ import { ProductService } from "./product";
 import { AddressService } from "./address";
 import { OrderService } from "./order";
 import { CartService } from "./cart";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export enum OrderStatusEnum {
   PENDING = "pending",
@@ -33,17 +33,65 @@ export class CustomerService {
     cartId: string;
     addressId: string;
   }): Promise<any> {
-    const product = await this.cartService.getCartById(cartId as any);
-    const order = await this.orderService.createNewOrder({
-      customerId: new Types.ObjectId(product.customerId as any),
-      items: product.items,
-      deliveryAddressId: new Types.ObjectId(addressId),
-      totalPrice: product.totalPrice || 0,
-      status: OrderStatusEnum.PENDING,
-    });
-    await this.cartService.deleteCartById(cartId as any);
-    return order;
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const product = await this.cartService.getCartById(
+        cartId as any,
+        session
+      );
+      if (!product) throw new Error("Cart not found");
+      const order = await this.orderService.createNewOrder(
+        {
+          customerId: new Types.ObjectId(product.customerId),
+          items: product.items,
+          deliveryAddressId: new Types.ObjectId(addressId),
+          totalPrice: product.totalPrice || 0,
+          status: OrderStatusEnum.PENDING,
+        },
+        session
+      );
+      for (const item of product.items) {
+        const success = await this.productService.decrementStock(
+          item.productId as any,
+          item.quantity,
+          session
+        );
+        if (!success) {
+          throw new Error(`Insufficient stock for product ${item.productId}`);
+        }
+      }
+      await this.cartService.deleteCartById(cartId as any, session);
+      await session.commitTransaction();
+      session.endSession();
+      return order;
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
   }
+  // async placeOrder({
+  //   addressId,
+  //   cartId,
+  // }: {
+  //   cartId: string;
+  //   addressId: string;
+  // }): Promise<any> {
+  //   const product = await this.cartService.getCartById(cartId as any);
+  //   const order = await this.orderService.createNewOrder({
+  //     customerId: new Types.ObjectId(product.customerId as any),
+  //     items: product.items,
+  //     deliveryAddressId: new Types.ObjectId(addressId),
+  //     totalPrice: product.totalPrice || 0,
+  //     status: OrderStatusEnum.PENDING,
+  //   });
+  //   product.items.forEach(async(item) =>
+  //     await this.productService.decrementStock(item.productId as any, item.quantity)
+  //   );
+  //   await this.cartService.deleteCartById(cartId as any);
+  //   return order;
+  // }
   async getProductById(
     productId: string,
     customerId: string
