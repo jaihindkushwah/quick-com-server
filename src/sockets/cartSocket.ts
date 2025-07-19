@@ -49,13 +49,21 @@ export function setupCartSocketEvents(io: Server) {
       }
     });
 
-    socket.on("placeOrder", (data) => {
-      console.log(data);
+    socket.on("placeOrder", async (data) => {
+      try {
+        await customerService.placeOrder(data);
+        const cartData = await cartService.getCartByCustomerId(userId);
+        socket.emit("updatedCartData", cartData);
+        socket.to(userId).emit("updatedCartData", cartData);
+      } catch (err) {
+        console.error("addToCart error:", err);
+        socket.emit("error", { message: "Failed to add to cart" });
+      }
     });
 
     socket.on("removeFromCart", async (data) => {
       try {
-        const { productId ,cartId} = data;
+        const { productId, cartId } = data;
         const result = await customerService.removeFromCart(cartId, productId);
         socket.emit("updatedCartData", result);
         socket.to(userId).emit("updatedCartData", result);

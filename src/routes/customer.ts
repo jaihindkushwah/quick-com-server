@@ -29,6 +29,10 @@ export class CustomerRoutes {
     this.router.get("/orders", this.customerController.getMyOrders);
     this.router.post("/place-order", this.customerController.placeOrder);
     this.router.post("/add-to-cart", this.customerController.addToCart);
+    this.router.post("/create-address", this.customerController.createAddress);
+    this.router.post("/remove-address", this.customerController.deleteAddress);
+    this.router.post("/update-address", this.customerController.updateAddress);
+    this.router.get("/addresses", this.customerController.getAddresses);
     this.router.post(
       "/remove-from-cart",
       this.customerController.removeFromCart

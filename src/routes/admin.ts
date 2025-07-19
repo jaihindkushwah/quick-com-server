@@ -10,7 +10,7 @@ export class AdminRoutes {
   private adminController: AdminController;
   constructor() {
     const orderService = new OrderService();
-    const partnerService = new PartnerService();
+    const partnerService = new PartnerService(orderService);
     const productService = new ProductService();
     const adminService = new AdminService(
       orderService,
@@ -21,6 +21,12 @@ export class AdminRoutes {
   }
   routes() {
     this.router.post("/create-product", this.adminController.createNewProduct);
+    this.router.get("/orders", this.adminController.getAllOrders);
+    this.router.get("/partners", this.adminController.getAllPartners);
+    this.router.get(
+      "/order-live-status",
+      this.adminController.getAllOrderLiveStatus
+    );
     return this.router;
   }
 }

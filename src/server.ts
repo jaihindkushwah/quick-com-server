@@ -47,6 +47,7 @@ function errorHandlerMiddleware(app: Application) {
 
 function createSocketServer(httpServer: HTTPServer): SocketIOServer {
   return new SocketIOServer(httpServer, {
+    path: "/ws",
     cors: {
       origin: "*", // 🔐 In production, use your frontend domain here
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],

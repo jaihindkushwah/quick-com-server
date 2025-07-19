@@ -12,8 +12,38 @@ export class AdminController {
     this.getAllOrders = this.getAllOrders.bind(this);
     this.createNewProduct = this.createNewProduct.bind(this);
   }
-  async getAllOrders() {}
-  async getAllPartners() {}
+  async getAllOrders(req: Request, res: Response) {
+    try {
+      const data = await this.adminService.getAllOrders();
+      res.status(200).json({ status: STATUS_CODES.OK, data });
+    } catch (error) {
+      if (error instanceof Error)
+        res
+          .status(400)
+          .json({ status: STATUS_CODES.BAD_REQUEST, error: error.message });
+      else
+        res.status(400).json({
+          status: STATUS_CODES.BAD_REQUEST,
+          error: "Something went wrong",
+        });
+    }
+  }
+  async getAllPartners(req: Request, res: Response) {
+    try {
+      const data = await this.adminService.getAllPartners();
+      res.status(200).json({ status: STATUS_CODES.OK, data });
+    } catch (error) {
+      if (error instanceof Error)
+        res
+          .status(400)
+          .json({ status: STATUS_CODES.BAD_REQUEST, error: error.message });
+      else
+        res.status(400).json({
+          status: STATUS_CODES.BAD_REQUEST,
+          error: "Something went wrong",
+        });
+    }
+  }
   async getAllOrderLiveStatus() {}
   async createNewProduct(req: Request, res: Response) {
     try {

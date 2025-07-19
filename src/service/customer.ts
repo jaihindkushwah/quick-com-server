@@ -1,10 +1,18 @@
-import { ICart, ICartItem, IProduct } from "@/@types/schema";
+import { IAddress, ICart, ICartItem, IProduct } from "@/@types/schema";
 import { ProductService } from "./product";
 import { AddressService } from "./address";
 import { OrderService } from "./order";
 import { CartService } from "./cart";
 import { Types } from "mongoose";
 
+export enum OrderStatusEnum {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  PICKEDUP = "pickedup",
+  ON_THE_WAY = "on_the_way",
+  DELIVERED = "delivered",
+  CANCELLED = "cancelled",
+}
 export class CustomerService {
   constructor(
     private readonly productService: ProductService,
@@ -18,8 +26,23 @@ export class CustomerService {
   async getCustomerAddress(customerId: string) {
     return await this.addressService.getAddressByUserId(customerId);
   }
-  async placeOrder(productId: string): Promise<any> {
-    const product = await this.productService.getProductById(productId);
+  async placeOrder({
+    addressId,
+    cartId,
+  }: {
+    cartId: string;
+    addressId: string;
+  }): Promise<any> {
+    const product = await this.cartService.getCartById(cartId as any);
+    const order = await this.orderService.createNewOrder({
+      customerId: new Types.ObjectId(product.customerId as any),
+      items: product.items,
+      deliveryAddressId: new Types.ObjectId(addressId),
+      totalPrice: product.totalPrice || 0,
+      status: OrderStatusEnum.PENDING,
+    });
+    await this.cartService.deleteCartById(cartId as any);
+    return order;
   }
   async getProductById(
     productId: string,
@@ -39,7 +62,7 @@ export class CustomerService {
     return await this.orderService.getOrdersByCustomerId(customerId);
   }
   async removeFromCart(cartId: string, productId: string) {
-   const res= await this.cartService.removeItemFromCartById(
+    const res = await this.cartService.removeItemFromCartById(
       cartId as any,
       productId as any
     );
@@ -61,9 +84,9 @@ export class CustomerService {
         (item) => item.productId.toString() === product._id.toString()
       );
       if (existingItem) {
-        const curr=existingItem.quantity*product.price;
+        const curr = existingItem.quantity * product.price;
         existingItem.quantity = cartInput.quantity;
-        cart.totalPrice = prodTotal-curr+(cart.totalPrice || 0);
+        cart.totalPrice = prodTotal - curr + (cart.totalPrice || 0);
       } else {
         cart.items.push(cartInput);
         cart.totalPrice = prodTotal + (cart.totalPrice || 0);
@@ -80,5 +103,24 @@ export class CustomerService {
       totalPrice: prodTotal,
     });
     return await this.getAllCartItems(customerId);
+  }
+  async createAddress(customerId: string, addressInput: Omit<IAddress, "_id">) {
+    return await this.addressService.createNewAddress({
+      ...addressInput,
+      userId: new Types.ObjectId(customerId),
+    });
+  }
+  async getAddresses(customerId: string) {
+    return await this.addressService.getAddressByUserId(customerId);
+  }
+  async deleteAddress(customerId: string, addressId: string) {
+    return await this.addressService.deleteAddressById(addressId);
+  }
+  async updateAddress(
+    customerId: string,
+    addressId: string,
+    addressInput: any
+  ) {
+    return await this.addressService.updateAddressById(addressId, addressInput);
   }
 }

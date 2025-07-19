@@ -10,7 +10,7 @@ export class AdminService {
     private readonly productService: ProductService
   ) {}
   async getAllOrders() {
-    return this.orderService.getAllOrders();
+    return this.orderService.getAllOrders(true);
   }
   async getAllPartners() {
     return this.partnerService.getAllPartners();
